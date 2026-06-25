@@ -1,0 +1,23 @@
+{
+  "name": "br-validator-api",
+  "version": "1.0.0",
+  "description": "API REST em Express para validar e gerar documentos brasileiros (CPF, CNPJ, PIS, CEP, telefone).",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "keywords": ["api", "rest", "express", "brasil", "cpf", "cnpj", "validation", "nodejs"],
+  "author": "Samuel Ferreira",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/Samuelf27/br-validator-api.git" },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}
