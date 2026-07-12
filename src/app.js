@@ -1,7 +1,27 @@
 import express from 'express';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { VALIDATORS, GENERATORS } from './br.js';
 
+// Tamanho máximo aceito para o campo "value" antes de qualquer processamento.
+const MAX_VALUE_LENGTH = 100;
+
 export const app = express();
+
+// Cabeçalhos de segurança.
+app.use(helmet());
+
+// Limite de requisições aplicado a todas as rotas.
+app.use(
+  rateLimit({
+    windowMs: 60 * 1000, // 1 minuto
+    max: 100, // 100 requisições por IP por janela
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Muitas requisições. Tente novamente em instantes.' },
+  }),
+);
+
 app.use(express.json());
 
 // CORS simples (API pública)
@@ -13,6 +33,9 @@ app.use((_req, res, next) => {
 });
 
 const TYPES = Object.keys(VALIDATORS);
+
+// Rejeita valores excessivamente longos com 400 (JSON), antes de processar.
+const tooLong = (value) => typeof value === 'string' && value.length > MAX_VALUE_LENGTH;
 
 // Raiz — documentação rápida
 app.get('/', (_req, res) => {
@@ -38,6 +61,7 @@ app.get('/:type/validate', (req, res) => {
   const fn = VALIDATORS[type];
   if (!fn) return res.status(404).json({ error: `Tipo inválido. Use: ${TYPES.join(', ')}` });
   if (value == null) return res.status(400).json({ error: 'Parâmetro "value" é obrigatório.' });
+  if (tooLong(String(value))) return res.status(400).json({ error: `"value" excede o limite de ${MAX_VALUE_LENGTH} caracteres.` });
   res.json({ type, value: String(value), valid: fn(value) });
 });
 
@@ -55,8 +79,18 @@ app.post('/validate', (req, res) => {
   const fn = VALIDATORS[type];
   if (!fn) return res.status(400).json({ error: `Campo "type" inválido. Use: ${TYPES.join(', ')}` });
   if (value == null) return res.status(400).json({ error: 'Campo "value" é obrigatório.' });
+  if (tooLong(String(value))) return res.status(400).json({ error: `"value" excede o limite de ${MAX_VALUE_LENGTH} caracteres.` });
   res.json({ type, value: String(value), valid: fn(value) });
 });
 
 // 404
 app.use((_req, res) => res.status(404).json({ error: 'Rota não encontrada.' }));
+
+// Tratamento de erros — mantém respostas em JSON (ex.: JSON malformado no body).
+// eslint-disable-next-line no-unused-vars
+app.use((err, _req, res, _next) => {
+  if (err && err.type === 'entity.parse.failed') {
+    return res.status(400).json({ error: 'JSON inválido no corpo da requisição.' });
+  }
+  res.status(500).json({ error: 'Erro interno do servidor.' });
+});
