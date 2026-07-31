@@ -8,7 +8,7 @@ API REST em Express para <b>validar e gerar documentos brasileiros</b> — CPF, 
   <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white"/>
   <img src="https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white"/>
   <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white"/>
-  <img src="https://img.shields.io/badge/tests-6%20passing-34d399?style=flat"/>
+  <img src="https://img.shields.io/badge/tests-13%20passing-34d399?style=flat"/>
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat"/>
 </p>
 
@@ -16,7 +16,7 @@ API REST em Express para <b>validar e gerar documentos brasileiros</b> — CPF, 
 
 ## 📌 Sobre
 
-API HTTP que expõe validação e geração de documentos brasileiros como serviço REST — útil para back-ends, formulários e automações que precisam validar CPF/CNPJ no servidor. Inclui testes (Supertest), Dockerfile e está pronta para deploy serverless.
+API HTTP que expõe validação e geração de documentos brasileiros como serviço REST — útil para back-ends, formulários e automações que precisam validar CPF/CNPJ no servidor. Inclui cabeçalhos de segurança com **helmet** e **rate limiting** (100 requisições por minuto por IP via `express-rate-limit`), testes (Supertest), Dockerfile e está pronta para deploy serverless.
 
 ## 🔗 Endpoints
 
@@ -69,7 +69,7 @@ O projeto já inclui `vercel.json` e a pasta `api/`. Faça o deploy na Vercel:
 
 ```
 src/br.js     # lógica de validação/geração (sem dependências)
-src/app.js    # app Express (rotas, CORS, tratamento de erros)
+src/app.js    # app Express (rotas, helmet, rate limiting, CORS, tratamento de erros)
 server.js     # entrypoint local
 api/index.js  # entrypoint serverless (Vercel)
 test/         # testes de integração (Supertest)
