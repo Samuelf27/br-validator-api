@@ -75,6 +75,22 @@ api/index.js  # entrypoint serverless (Vercel)
 test/         # testes de integração (Supertest)
 ```
 
+## 🧪 Testes
+
+**13 testes** de integração com o runner nativo do Node (`node --test`), rodando no CI a cada push e pull request.
+
+Cobrem cada rota e o comportamento de erro da API:
+
+- `GET /:tipo/validate` para CPF, CNPJ, PIS, CEP e telefone
+- `GET /cpf/generate` gera um CPF que **passa no próprio `/validate`** — o gerador é verificado contra o validador
+- `POST /validate` pelo corpo da requisição
+- Tipo inválido → `404`; `type` inválido no corpo → `400`; `value` ausente ou longo demais → `400`
+- **JSON malformado responde `400` em JSON, não em HTML** — erro de parse não vaza página de erro do Express
+
+```bash
+npm test
+```
+
 ## 📄 Licença
 
 [MIT](LICENSE) © Samuel Ferreira
