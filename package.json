@@ -30,10 +30,10 @@
   },
   "dependencies": {
     "express": "^5.2.1",
-    "express-rate-limit": "^8.6.2",
+    "express-rate-limit": "^8.7.0",
     "helmet": "^8.3.0"
   },
   "devDependencies": {
-    "supertest": "^7.0.0"
+    "supertest": "^7.3.0"
   }
 }
