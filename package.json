@@ -29,11 +29,11 @@
     "node": ">=18"
   },
   "dependencies": {
-    "express": "^5.2.1",
-    "express-rate-limit": "^8.6.2",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
     "helmet": "^8.3.0"
   },
   "devDependencies": {
-    "supertest": "^7.0.0"
+    "supertest": "^7.3.1"
   }
 }
